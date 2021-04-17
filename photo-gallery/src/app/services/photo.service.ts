@@ -36,6 +36,11 @@ export class PhotoService {
 
   }
   
+  public getPhotos(): Photo[]
+  {
+    return this.photos;
+  }
+
   private async savePicture(cameraPhoto: CameraPhoto) {
     // Converte foto para o formato 64
     const base64Data = await this.readAsBase64(cameraPhoto);
@@ -43,7 +48,7 @@ export class PhotoService {
     // Cria o nome da imagem
     const fileName = new Date().getTime() + '.jpeg';
     // Salva a imagem no diretorio
-    const savedFile = await Filesystem.writeFile({
+    await Filesystem.writeFile({
       path: fileName,
       data: base64Data,
       directory: FilesystemDirectory.Data
