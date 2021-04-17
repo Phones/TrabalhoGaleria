@@ -19,13 +19,14 @@ export class PhotoService {
   constructor() { }
 
   public async addNewToGallery() {
-    // Take a photo
+    // Tira foto
     const capturedPhoto = await Camera.getPhoto({
       resultType: CameraResultType.Uri, 
       source: CameraSource.Camera, 
       quality: 100 
     });
   
+    // Salva imagem
     const savedImageFile = await this.savePicture(capturedPhoto);
     this.photos.unshift(savedImageFile);
 
@@ -54,8 +55,7 @@ export class PhotoService {
       directory: FilesystemDirectory.Data
     });
 
-    // Use webPath to display the new image instead of base64 since it's
-    // already loaded into memory
+    // Retorna o caminho da imagem e o nome
     return {
       filepath: fileName,
       webviewPath: cameraPhoto.webPath
@@ -81,27 +81,24 @@ export class PhotoService {
    });
 
 
-   // Carrega as fotos que estão salvas no programa
+   // Carrega as fotos que estão salvas 
    public async loadSaved() {
     // Retrieve cached photo array data
     const photoList = await Storage.get({ key: this.PHOTO_STORAGE });
     this.photos = JSON.parse(photoList.value) || [];
   
-    // Display the photo by reading into base64 format
+    // Mostra as imagens que estão sendo lidas, no formato 64
     for (let photo of this.photos) {
-      // Read each saved photo's data from the Filesystem
+      // Faz a leitura das fotos salvas
       const readFile = await Filesystem.readFile({
           path: photo.filepath,
           directory: FilesystemDirectory.Data
       });
 
-      // Web platform only: Load the photo as base64 data
+      // Carrega a imagem na plataforma web
       photo.webviewPath = `data:image/jpeg;base64,${readFile.data}`;
     }
   }
-
-
-
 }
 
 export interface Photo {
